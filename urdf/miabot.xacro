@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!-- Miabot PRO - Miniature Intelligent Autonomous roBOT -->
+<!-- Merlin Systems Corp. Ltd -->
+<!-- www.merlinsytsemscorp.co.uk -->
+<!-- Author: Mark Norman 8th January 2011 -->
+<!-- Exapnsion kit definitions to follow: Sonar, Compass, Gripper, OnBoard Camera-->
+<!--                                      Kinect, Line Follower -->
+
+<robot name="MiabotPro"
+      xmlns:xacro="http://www.ros.org/wiki/xacro"
+       xmlns:xi="http://www.w3.org/2001/XInclude"
+       xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+       xmlns:model="http://playerstage.sourceforge.net/gazebo/xmlschema/#model"
+       xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body"
+       xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"
+       xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#joint"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:rendering="http://playerstage.sourceforge.net/gazebo/xmlschema/#rendering"
+       xmlns:renderable="http://playerstage.sourceforge.net/gazebo/xmlschema/#renderable"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:physics="http://playerstage.sourceforge.net/gazebo/xmlschema/#physics">
+
+	<xacro:property name="body_width" value=".07" />
+	<xacro:property name="body_length" value=".07" />
+	<xacro:property name="body_height" value=".07" />
+	<xacro:property name="wheel_radius" value=".025" />
+	<xacro:property name="wheel_length" value=".01" />
+	<xacro:property name="body_clearance" value=".003" />
+	<xacro:property name="wheel_offset" value="${-((body_height/2.0)-wheel_radius)}" />
+
+	<!-- Links: inertial,visual,collision -->
+        <link name="base_link">
+                <inertial>
+                        <!-- origin is relative -->
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <mass value="5"/>
+                        <inertia ixx="5" ixy="0" ixz="0" iyy="5" iyz="0" izz="5"/>
+                </inertial>
+                <visual>
+                        <origin xyz="0 0 ${body_clearance}" rpy="0 0 0"/>
+                        <geometry>
+                                <box size="${body_width} ${body_length} ${body_height}"/>
+                        </geometry>
+			<material name="black">
+				<color rgba="0 0 0 0"/>
+	      		</material>
+                </visual>
+		<collision>
+		      <geometry>
+                                <box size="${body_width} ${body_length} ${body_height}"/>
+		      </geometry>
+    		</collision> 
+	</link>
+
+	<xacro:macro name="wheel" params="prefix r g b">
+		<link name="${prefix}_wheel" params="r g b">
+		        <inertial>
+		                <origin xyz="0 0 0" rpy="0 0 0"/>
+		                <mass value="1"/>
+		                <inertia ixx="0.2" ixy="0" ixz="0" iyy="0.2" iyz="0" izz="0.2"/>
+		        </inertial>
+		        <visual>
+		                <origin xyz="0 0 0" rpy="0 1.57 1.57"/>
+		                <geometry>
+		                        <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+		                </geometry>
+				<material name="white">
+					<color rgba="${r} ${g} ${b} 1"/>
+		      		</material>
+		        </visual>
+		</link>
+	</xacro:macro>
+	
+	<xacro:wheel prefix="left" r="1" g="1" b="1"/>
+	<xacro:wheel prefix="right" r="1" g="1" b="1"/>
+
+	<xacro:macro name="wheeljoint" params="prefix reflect r g b">
+		<!-- Joints: axis,limit,dynamics,orign,parent,child -->
+		<joint name="${prefix}_joint" type="continuous">
+		        <parent link="base_link"/>
+		        <child link="${prefix}_wheel" r="${r}" g="${g}" b="${b}" />
+		        <origin xyz="0 ${reflect*(body_length/2)} ${wheel_offset}"/>
+		        <axis xyz="1 0 0"/>
+    			<limit effort="100" velocity="100"/>
+    			<joint_properties damping="0.0" friction="0.0"/>
+		</joint>
+	</xacro:macro>
+
+	<xacro:wheeljoint prefix="left" reflect="-1" r="1" g="1" b="1"/>
+	<xacro:wheeljoint prefix="right" reflect="1" r="1" g="1" b="1"/>
+
+	<xacro:macro name="jointtransmission" params="prefix">
+		<!-- Transmission is important to link the joints and the controller -->
+		<transmission name="${prefix}_joint_trans" type="SimpleTransmission">
+		        <actuator name="${prefix}_joint_motor" />
+		        <joint name="{$prefix}_joint" />
+		        <mechanicalReduction>1</mechanicalReduction>
+		        <motorTorqueConstant>1</motorTorqueConstant>
+		</transmission>
+	</xacro:macro>
+
+	<xacro:jointtransmission prefix="left"/>
+	<xacro:jointtransmission prefix="right"/>
+
+        <!-- Colour -->
+        <gazebo reference="base_link">
+          <material>Gazebo/Green</material>
+        </gazebo>
+
+        <gazebo reference="left_wheel">
+          <material>Gazebo/Red</material>
+        </gazebo>
+
+        <gazebo reference="right_wheel">
+          <material>Gazebo/Blue</material>
+        </gazebo>
+</robot>
+

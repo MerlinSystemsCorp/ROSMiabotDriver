@@ -1,0 +1,19 @@
+<package>
+  <description brief="miabot">
+
+     Merlin Systems Corp. Ltd - MiabotPro mobile robot platform driver.
+
+  </description>
+  <author>user</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/miabot</url>
+  <depend package="roscpp"/>
+  <depend package="tf"/>
+<!--  <depend package="player"/>-->
+  <depend package="geometry_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="std_msgs"/>
+</package>
+
+

@@ -1,0 +1,3 @@
+# Use ./build_urdf.sh to build the .urdf file via .xacro file
+# use ./launch.sh to see the urdf file in rviz
+

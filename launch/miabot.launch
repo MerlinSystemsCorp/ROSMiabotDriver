@@ -1,0 +1,9 @@
+<launch>
+	<arg name="model" default="$(find miabot)/urdf/miabot.urdf" />
+	<arg name="gui" default="False" />
+	<param name="robot_description" textfile="$(arg model)" />
+	<param name="use_gui" value="$(arg gui)"/>
+
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find miabot)/launch/miabot.vcg" />
+</launch>
+

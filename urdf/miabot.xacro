@@ -6,7 +6,7 @@
 <!-- Exapnsion kit definitions to follow: Sonar, Compass, Gripper, OnBoard Camera-->
 <!--                                      Kinect, Line Follower -->
 
-<robot name="MiabotPro"
+<robot name="miabot"
       xmlns:xacro="http://www.ros.org/wiki/xacro"
        xmlns:xi="http://www.w3.org/2001/XInclude"
        xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
